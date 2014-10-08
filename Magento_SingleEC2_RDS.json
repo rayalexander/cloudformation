@@ -1,7 +1,7 @@
 {
   "AWSTemplateFormatVersion" : "2010-09-09",
 
-  "Description" : "AWS CloudFormation Sample Template WordPress_Single_Instance_With_RDS: WordPress is web software you can use to create a beautiful website or blog. This template installs a single-instance WordPress deployment using an Amazon RDS database instance for storage. It demonstrates using the AWS CloudFormation bootstrap scripts to install packages and files at instance launch time. **WARNING** This template creates an Amazon EC2 instance and an Amazon RDS database instance. You will be billed for the AWS resources used if you create a stack from this template.",
+  "Description" : "Magento running on single EC2 instance backed by RDS MySQL instance.",
 
   "Parameters" : {
 
@@ -123,7 +123,8 @@
               "yum" : {
                 "httpd"     : [],
                 "php"       : [],
-                "php-mysql" : []
+                "php-mysql" : [],
+                "mysql-common" : []
               }
             },
             "sources" : {
@@ -133,9 +134,9 @@
               "/var/www/html/wordpress/wp-config.php" : {
                 "content" : { "Fn::Join" : ["", [
                   "<?php\n",
-                  "define('DB_NAME',          '", {"Ref" : "DBName"}, "');\n",
-                  "define('DB_USER',          '", {"Ref" : "DBUsername"}, "');\n",
-                  "define('DB_PASSWORD',      '", {"Ref" : "DBPassword" }, "');\n",
+                  "define('DB_NAME',          '", {"Ref" : "MagentoDB"}, "');\n",
+                  "define('DB_USER',          '", {"Ref" : "magento"}, "');\n",
+                  "define('DB_PASSWORD',      '", {"Ref" : "magento" }, "');\n",
                   "define('DB_HOST',          '", {"Fn::GetAtt" : ["DBInstance", "Endpoint.Address"]},"');\n",
                   "define('DB_CHARSET',       'utf8');\n",
                   "define('DB_COLLATE',       '');\n"
@@ -202,13 +203,13 @@
     "DBInstance" : {
       "Type": "AWS::RDS::DBInstance",
       "Properties": {
-        "DBName"            : { "Ref" : "DBName" },
+        "DBName"            : { "Ref" : "MagentoDB" },
         "Engine"            : "MySQL",
-        "MasterUsername"    : { "Ref" : "DBUsername" },
-        "DBInstanceClass"   : { "Ref" : "DBClass" },
+        "MasterUsername"    : { "Ref" : "magento" },
+        "DBInstanceClass"   : { "Ref" : "magento" },
         "DBSecurityGroups"  : [{ "Ref" : "DBSecurityGroup" }],
-        "AllocatedStorage"  : { "Ref" : "DBAllocatedStorage" },
-        "MasterUserPassword": { "Ref" : "DBPassword" }
+        "AllocatedStorage"  : { "Ref" : "5" },
+        "MasterUserPassword": { "Ref" : "magento" }
       }
     },
 
